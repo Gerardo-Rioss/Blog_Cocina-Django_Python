@@ -13,16 +13,7 @@
  
 @import url(http://fonts.googleapis.com/css?family=Calibri:400,300,700);
 
-
-
-
-
-
-
-
-
 body {
-  background-color: #D32F2F;
   font-family: 'Calibri', sans-serif !important
 }
 
@@ -596,7 +587,9 @@ progress {
 .lead {
   font-size: 1.25rem;
   font-weight: 300;
+  
 }
+
 
 .display-1 {
   font-size: calc(1.625rem + 4.5vw);
@@ -3811,6 +3804,7 @@ textarea.form-control-lg {
 .nav-fill .nav-item {
   flex: 1 1 auto;
   text-align: center;
+  
 }
 
 .nav-justified > .nav-link,
@@ -3818,7 +3812,7 @@ textarea.form-control-lg {
   flex-basis: 0;
   flex-grow: 1;
   text-align: center;
-}
+  
 
 .nav-fill .nav-item .nav-link,
 .nav-justified .nav-item .nav-link {
@@ -3880,6 +3874,7 @@ textarea.form-control-lg {
   color: var(--bs-navbar-brand-color);
   text-decoration: none;
   white-space: nowrap;
+
 }
 .navbar-brand:hover, .navbar-brand:focus {
   color: var(--bs-navbar-brand-hover-color);
@@ -4324,6 +4319,8 @@ textarea.form-control-lg {
 
 .card-text:last-child {
   margin-bottom: 0;
+  font-size: 18px;
+  
 }
 
 .card-link + .card-link {
@@ -7887,10 +7884,23 @@ textarea.form-control-lg {
   padding-top: 1.5rem !important;
   padding-bottom: 1.5rem !important;
 }
-
+/* Seccion Unete a Nuestra Comunidad */
+.hover-shadow {
+  transition: all 0.3s ease;
+}
+.hover-shadow:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+.transition {
+  transition: all 0.3s ease;
+}
 .py-5 {
   padding-top: 3rem !important;
   padding-bottom: 3rem !important;
+  background-image: linear-gradient(to right top, #07554b, #157558, #3d965b, #6eb656, #a9d34b);
+  
+  
 }
 
 .pt-0 {
@@ -8100,6 +8110,10 @@ textarea.form-control-lg {
 .text-center {
   text-align: center !important;
 }
+.text-center p{
+  font-size: 26px;
+  font-weight: 500;
+}
 
 .text-decoration-none {
   text-decoration: none !important;
@@ -8143,6 +8157,8 @@ textarea.form-control-lg {
 .text-primary {
   --bs-text-opacity: 1;
   color: rgba(var(--bs-primary-rgb), var(--bs-text-opacity)) !important;
+  font-size: 30px;
+  
 }
 
 .text-secondary {
