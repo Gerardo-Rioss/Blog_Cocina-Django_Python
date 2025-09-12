@@ -1,17 +1,42 @@
-Blog de Cocina - Desarrollo Web con Django y Python
+# Blog de Cocina - Django & Python  
 
-        Como parte del curso de desarrollo web en el Informatorio, desarrollé un blog sobre cocina utilizando Django y Python. El proyecto incluyó las siguientes funcionalidades:
+**Proyecto final del curso de Desarrollo Web en El Informatorio**. Un blog interactivo sobre gastronomía con gestión de roles, permisos avanzados y contenido dinámico.  
 
-         - Gestión de Usuarios: Implementación de roles diferenciados:
-         Usuarios registrados: Podían comentar en las publicaciones y eliminar únicamente sus propios comentarios.
-         - Colaboradores: Capaces de publicar y editar sus propios artículos, y con permiso exclusivo para eliminar únicamente las publicaciones que habían creado.
-         - Administradores: Con acceso completo para gestionar publicaciones, comentarios y usuarios.
-         - Publicación de Contenido: Sistema para publicar y organizar recetas con imágenes, descripciones y categorías.
-         - Interacción del Usuario: Espacio para comentarios en cada publicación, fomentando la participación de la comunidad.
-         - Seguridad y Control: Restricciones para garantizar que cada usuario solo pudiera modificar o eliminar su contenido correspondiente.
+## 🎯 Objetivo  
+Crear una plataforma segura y colaborativa donde los usuarios compartan recetas, interactúen y gestionen contenido según sus roles.  
 
-        Este proyecto fue una excelente oportunidad para aplicar conceptos avanzados de Django, roles de usuario, seguridad en la gestión de permisos y desarrollo colaborativo.
+## 🚀 Características  
+### 🔹 Gestión de Usuarios y Permisos  
+- **Tres roles jerárquicos**:  
+  | Rol | Permisos |  
+  |---|---|  
+  | **Usuario Registrado** | Comentar + eliminar *sus comentarios*. |  
+  | **Colaborador** | Publicar/editar *sus artículos* + eliminar *sus publicaciones*. |  
+  | **Administrador** | CRUD completo (usuarios, posts, comentarios). |  
 
+### 🔹 Sistema de Contenido  
+- **Publicación de recetas**:  
+  - Formularios con campos para título, ingredientes, pasos, imagen y categoría.  
+- **Organización**:  
+  - Categorías predefinidas (ej: "Cena Rápida", "Recetas Saludables").  
+  - Búsqueda por título o ingrediente.  
+
+### 🔹 Interacción Comunitaria  
+- **Comentarios**:  
+  - Hilos anidados en cada receta.  
+  - Notificaciones de respuestas (integración con Django Signals).  
+- **Perfil de usuario**:  
+  - Historial de publicaciones y comentarios.  
+  - Avatar personalizable.  
+
+## 🛠️ Tecnologías  
+- **Backend**: Django 4.2+ (Python 3.10+)  
+- **Frontend**: HTML5, CSS3, JavaScript (ES6+), Bootstrap
+- **Base de datos**: SQLite (desarrollo) / PostgreSQL (producción)  
+- **Extras**:  
+  - Pillow (manejo de imágenes).  
+  
+## 📊 Vista previa 
         
 <img width="1193" height="608" alt="Blog1" src="https://github.com/user-attachments/assets/1375a75b-dcda-4162-87d3-608b4ba16ebe" />
 <img width="1009" height="519" alt="Blog5" src="https://github.com/user-attachments/assets/9e0cdc14-c308-40dd-b597-e7ce8eea5d4c" />
