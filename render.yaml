@@ -1,0 +1,33 @@
+services:
+  # Servicio Web — Django
+  - type: web
+    name: blog-cocina
+    runtime: python
+    region: ohio
+    plan: free
+    branch: proyecto_final
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn blog_cocina.wsgi:application --workers=2 --threads=4 --worker-class=gthread --timeout=120 --access-logfile=- --error-logfile=-"
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: blog_cocina.settings.production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com,localhost"
+      - key: PYTHON_VERSION
+        value: "3.11.15"
+      - key: WEB_CONCURRENCY
+        value: "2"
+      - fromGroup: database
+
+  # Base de datos PostgreSQL
+databases:
+  - name: blog-cocina-db
+    region: ohio
+    plan: free
+    databaseName: blog_cocina
+    user: blog_cocina_user
+    ipAllowList: [] # Solo acceso desde servicios internos de Render
