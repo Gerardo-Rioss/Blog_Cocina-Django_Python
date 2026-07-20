@@ -11,7 +11,7 @@
     function getPreferredTheme() {
         const stored = localStorage.getItem(THEME_KEY);
         if (stored) return stored;
-        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        return 'light';
     }
 
     function setTheme(theme) {
@@ -32,14 +32,7 @@
     // Aplicar tema al cargar
     setTheme(getPreferredTheme());
 
-    // Escuchar cambios en preferencia del sistema
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-        if (!localStorage.getItem(THEME_KEY)) {
-            setTheme(e.matches ? 'dark' : 'light');
-        }
-    });
-
-    // Exponer para uso en onclick
+    // Exponer toggle para uso en onclick
     window.toggleTheme = function() {
         const current = document.documentElement.getAttribute('data-theme');
         setTheme(current === 'dark' ? 'light' : 'dark');
