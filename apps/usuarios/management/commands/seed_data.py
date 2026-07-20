@@ -137,12 +137,50 @@ MENSAJES_CONTACTO = [
 
 
 def _imagen_articulo(idx):
-    """Abre una imagen real de comida desde media/articulos/."""
+    """Intenta abrir imagen real de media/articulos/. Si no existe, genera una con Pillow."""
     nombre = IMAGENES_POR_ARTICULO[idx % len(IMAGENES_POR_ARTICULO)]
     ruta = BASE_DIR / 'media' / 'articulos' / nombre
     if ruta.exists() and ruta.stat().st_size > 1000:
         return File(open(ruta, 'rb'), name=nombre)
-    return None
+
+    # Fallback: generar imagen con Pillow
+    from io import BytesIO
+    from PIL import Image, ImageDraw, ImageFont
+
+    ancho, alto = 800, 500
+    color = (172, 21, 65)
+    img = Image.new('RGB', (ancho, alto), color)
+    draw = ImageDraw.Draw(img)
+
+    # Gradiente tenue
+    for y in range(alto):
+        factor = y / alto
+        r = int(color[0] * (1 - factor * 0.3))
+        g = int(color[1] * (1 - factor * 0.3))
+        b = int(color[2] * (1 - factor * 0.3))
+        draw.line([(0, y), (ancho, y)], fill=(r, g, b))
+
+    # Circulo decorativo
+    cx, cy, radio = ancho // 2, alto // 2 - 30, 120
+    for i in range(radio, 0, -1):
+        alpha = int(30 * (1 - i / radio))
+        draw.ellipse([(cx - i, cy - i), (cx + i, cy + i)],
+                     fill=(255, 255, 255, alpha))
+
+    # Texto
+    try:
+        font = ImageFont.truetype("arial.ttf", 32)
+        font_small = ImageFont.truetype("arial.ttf", 18)
+    except (IOError, OSError):
+        font = font_small = ImageFont.load_default()
+
+    draw.text((ancho//2 - 100, alto//2 + 50), "🍳 Blog Cocina",
+              fill='white', font=font)
+
+    buf = BytesIO()
+    img.save(buf, format='JPEG', quality=80)
+    buf.seek(0)
+    return File(buf, name=f'articulo_{idx}.jpg')
 
 
 class Command(BaseCommand):
