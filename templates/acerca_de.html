@@ -5,133 +5,135 @@
 
 {% block contenido %}
 
-
-<!-- Header-->
-<header class="py-5">
-    <div class="container px-5">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 col-xxl-6">
-                <div class="text-center my-5">
-                    <h1 class="fw-bolder mb-3">¡Bienvenido a Delicias Culinarias!</h1>
-                    <p class="lead fw-normal text-muted mb-4">En Delicias Culinarias, estamos apasionados por la cocina y creemos que la comida es mucho más que solo una necesidad
-                    básica; es un arte que despierta emociones, crea conexiones y brinda momentos inolvidables. Nuestro blog nació con el
-                    deseo de compartir nuestra pasión por la cocina y llevar a nuestros lectores en un viaje culinario lleno de sabores,
-                    aromas y experiencias inolvidables.</p>
-                    
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
-<!-- About section one-->
-<section class="py-5 bg-light" id="scroll-target">
-    <div class="container px-5 my-5">
-        <div class="row gx-5 align-items-center">
-            <div class="col-lg-6"><img class="img-fluid rounded mb-5 mb-lg-0"
-                    src="{% static 'img/img13.jpg' %}" alt="..." /></div>
-            <div class="col-lg-6">
-                <h2 class="fw-bolder">¿Quiénes Somos?</h2>
-                <p class="lead fw-normal text-muted mb-0">Somos un equipo de entusiastas amantes de la gastronomía con una diversidad de antecedentes y culturas, pero con una
-                cosa en común: la dedicación a la cocina como forma de expresión y amor. Nuestra misión es inspirar a las personas a
-                descubrir el placer de cocinar y a disfrutar de cada etapa del proceso culinario.</p>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- About section two-->
+<!-- Hero -->
 <section class="py-5">
-    <div class="container px-5 my-5">
-        <div class="row gx-5 align-items-center">
-            <div class="col-lg-6 order-first order-lg-last"><img class="img-fluid rounded mb-5 mb-lg-0"
-                    src="{% static 'img/img12.jpg' %}" alt="..." /></div>
-            <div class="col-lg-6">
-                <h2 class="fw-bolder">Nuestro Propósito</h2>
-                <p class="lead fw-normal text-muted mb-0">En Delicias Culinarias, nuestro propósito es proporcionar contenido que no solo sea delicioso, sino también nutritivo y
-                accesible para todos. Creemos que la cocina es una forma de arte que permite la creatividad y la experimentación, y
-                nuestro objetivo es brindarte recetas, tips y consejos que te animen a aventurarte en la cocina y descubrir nuevas
-                habilidades culinarias.</p>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center reveal">
+                <span class="subtitle" style="font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--color-primary);">Sobre Nosotros</span>
+                <h1 class="fw-bold mt-2" style="font-family:var(--font-display);font-size:2.8rem;">
+                    Delicias Culinarias
+                </h1>
+                <div class="divider-line" style="width:60px;height:3px;background:var(--color-primary);margin:20px auto;"></div>
+                <p class="lead text-muted mt-4" style="max-width:650px;margin:0 auto;">
+                    En Delicias Culinarias creemos que la comida es un arte que despierta emociones, 
+                    crea conexiones y brinda momentos inolvidables.
+                </p>
             </div>
         </div>
     </div>
 </section>
 
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-lg-12">
-                    <!-- Post content-->
-                    <article>
-                        <!-- Post header-->
-                        <header class="mb-4">
-                            <!-- Post title-->
-                            <h1 class="fw-bolder mb-1">Lo que Encontrarás en Nuestro Blog</h1>                                        
-                        </header>
-                        <!-- Post content-->
-                        <section class="mb-5">
-                            <p class="fs-5 mb-4"><strong>Recetas para Todos los Gustos:</strong> Nuestro blog ofrece una amplia gama de recetas que se adaptan a diferentes paladares y
-                            preferencias alimentarias. Desde platos reconfortantes y caseros hasta opciones saludables y vegetarianas, encontrarás
-                            algo que te deleitará en cada ocasión.</p>
-                            <p class="fs-5 mb-4"><strong>Explorando la Gastronomía Internacional:</strong> Nos encanta viajar a través de sabores y aromas de todo el mundo. En nuestro
-                            blog, podrás descubrir recetas auténticas y técnicas tradicionales de diferentes culturas, llevando la emoción de la
-                            comida internacional directamente a tu mesa.</p>
-                            <p class="fs-5 mb-4"><strong>Tips y Trucos Culinarios:</strong> Queremos que te sientas confiado en la cocina, por lo que compartimos valiosos tips y trucos
-                            que te ayudarán a perfeccionar tus habilidades culinarias y a enfrentar nuevos desafíos gastronómicos.</p>
-                        </section>
-                    </article>
-    </div>
-</div>
-
-
+<!-- Quienes Somos -->
 <section class="py-5 bg-light">
-    <div class="container px-5 my-5">
-        <div class="text-center">
-            <h2 class="fw-bolder">Grupo 4 - Informatorio</h2>
-            <p class="lead fw-normal text-muted mb-5">Integrantes:</p>
+    <div class="container">
+        <div class="row g-5 align-items-center reveal">
+            <div class="col-lg-6">
+                <img class="img-fluid rounded-3 shadow-sm" src="{% static 'img/img13.jpg' %}" alt="Cocina" loading="lazy" />
+            </div>
+            <div class="col-lg-6">
+                <span class="subtitle" style="font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--color-primary);">Nuestra Historia</span>
+                <h2 class="fw-bold mt-2" style="font-family:var(--font-display);">¿Quiénes Somos?</h2>
+                <p class="text-muted mt-3">
+                    Somos un equipo de entusiastas amantes de la gastronomía con una diversidad de 
+                    antecedentes y culturas, pero con una cosa en común: la dedicación a la cocina 
+                    como forma de expresión y amor.
+                </p>
+                <p class="text-muted">
+                    Nuestra misión es inspirar a las personas a descubrir el placer de cocinar y a 
+                    disfrutar de cada etapa del proceso culinario.
+                </p>
+            </div>
         </div>
-        <div class="row gx-5 row-cols-1 row-cols-sm-2 row-cols-xl-3 justify-content-center">
-            <div class="col mb-4 mb-4 mb-xl-0">
-                <div class="text-center">
-                    <img class="img-fluid rounded-circle mb-3 px-3" src="{% static 'img/informatorio-logo.png'%}"
-                        alt="..." />
-                    <h5 class="fw-bolder">Paula Micaela Tourn</h5>
-                    <div class="fst-italic text-muted">Estudiante Informatorio</div>
-                    <div class="fst-italic text-muted">Desarrollo web - Django</div>
+    </div>
+</section>
+
+<!-- Proposito -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-5 align-items-center reveal">
+            <div class="col-lg-6 order-lg-2">
+                <img class="img-fluid rounded-3 shadow-sm" src="{% static 'img/img12.jpg' %}" alt="Ingredientes" loading="lazy" />
+            </div>
+            <div class="col-lg-6 order-lg-1">
+                <span class="subtitle" style="font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--color-primary);">Nuestra Visión</span>
+                <h2 class="fw-bold mt-2" style="font-family:var(--font-display);">Nuestro Propósito</h2>
+                <p class="text-muted mt-3">
+                    Proporcionar contenido que no solo sea delicioso, sino también nutritivo y accesible 
+                    para todos. Creemos que la cocina es una forma de arte que permite la creatividad 
+                    y la experimentación.
+                </p>
+                <p class="text-muted">
+                    Nuestro objetivo es brindarte recetas, tips y consejos que te animen a aventurarte 
+                    en la cocina y descubrir nuevas habilidades culinarias.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Valores -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="section-header reveal">
+            <span class="subtitle">Qué ofrecemos</span>
+            <h2>Lo que Encontrarás en Nuestro Blog</h2>
+            <div class="divider-line"></div>
+        </div>
+        <div class="row g-4 reveal">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100 p-4 text-center">
+                    <i class="bi bi-bookmark-heart text-primary fs-1 mb-3"></i>
+                    <h5 style="font-family:var(--font-display);">Recetas para Todos los Gustos</h5>
+                    <p class="text-muted small">Desde platos reconfortantes y caseros hasta opciones saludables y vegetarianas, encontrarás algo que te deleitará.</p>
                 </div>
             </div>
-            <div class="col mb-4 mb-4 mb-xl-0">
-                <div class="text-center">
-                    <img class="img-fluid rounded-circle mb-3 px-3" src="{% static 'img/informatorio-logo.png'%}"
-                        alt="..." />
-                    <h5 class="fw-bolder">Gerardo German Rios</h5>
-                    <div class="fst-italic text-muted">Estudiante Informatorio</div>
-                    <div class="fst-italic text-muted">Desarrollo web - Django</div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100 p-4 text-center">
+                    <i class="bi bi-globe text-primary fs-1 mb-3"></i>
+                    <h5 style="font-family:var(--font-display);">Gastronomía Internacional</h5>
+                    <p class="text-muted small">Descubrí recetas auténticas y técnicas tradicionales de diferentes culturas, llevando la comida internacional a tu mesa.</p>
                 </div>
             </div>
-            <div class="col mb-4 mb-4 mb-sm-0">
-                <div class="text-center">
-                    <img class="img-fluid rounded-circle mb-3 px-3" src="{% static 'img/informatorio-logo.png'%}"
-                        alt="..." />
-                    <h5 class="fw-bolder">Juan Esteban Boscarino</h5>
-                    <div class="fst-italic text-muted">Estudiante Informatorio</div>
-                    <div class="fst-italic text-muted">Desarrollo web - Django</div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100 p-4 text-center">
+                    <i class="bi bi-lightbulb text-primary fs-1 mb-3"></i>
+                    <h5 style="font-family:var(--font-display);">Tips y Trucos Culinarios</h5>
+                    <p class="text-muted small">Compartimos valiosos consejos que te ayudarán a perfeccionar tus habilidades en la cocina.</p>
                 </div>
             </div>
-            <div class="col mb-4">
+        </div>
+    </div>
+</section>
+
+<!-- Equipo -->
+<section class="py-5">
+    <div class="container">
+        <div class="section-header reveal">
+            <span class="subtitle">El equipo</span>
+            <h2>Grupo 4 — Informatorio</h2>
+            <div class="divider-line"></div>
+        </div>
+        
+        <div class="row g-4 justify-content-center reveal">
+            {% for miembro in "12345"|make_list %}
+            <div class="col-lg-2 col-md-4 col-6">
                 <div class="text-center">
-                    <img class="img-fluid rounded-circle mb-3 px-3" src="{% static 'img/informatorio-logo.png'%}"
-                        alt="..." />
-                    <h5 class="fw-bolder">Mauricio Aguirre</h5>
-                    <div class="fst-italic text-muted">Estudiante Informatorio</div>
-                    <div class="fst-italic text-muted">Desarrollo web - Django</div>
+                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto mb-3" 
+                         style="width:80px;height:80px;">
+                        <i class="bi bi-person-circle text-muted fs-1"></i>
+                    </div>
+                    <h6 class="fw-semibold small mb-0">
+                        {% if forloop.counter == 1 %}Paula Micaela Tourn
+                        {% elif forloop.counter == 2 %}Gerardo German Rios
+                        {% elif forloop.counter == 3 %}Juan Esteban Boscarino
+                        {% elif forloop.counter == 4 %}Mauricio Aguirre
+                        {% else %}Jorge Leandro Alarcon{% endif %}
+                    </h6>
+                    <span class="text-muted" style="font-size:11px;">Desarrollo Web — Django</span>
                 </div>
             </div>
-            <div class="col mb-4">
-                <div class="text-center">
-                    <img class="img-fluid rounded-circle mb-3 px-3" src="{% static 'img/informatorio-logo.png'%}" />
-                    <h5 class="fw-bolder">Jorge Leandro Alarcon</h5>
-                    <div class="fst-italic text-muted">Estudiante Informatorio</div>
-                    <div class="fst-italic text-muted">Desarrollo web - Django</div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 </section>

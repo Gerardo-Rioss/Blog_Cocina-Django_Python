@@ -1,110 +1,150 @@
 {% load static %}
 
 <!doctype html>
-<html lang="en">
+<html lang="es">
 
 <head>
-    <title>Blog | {% block titulo %}{% endblock titulo %}</title>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
+    <title>Blog Cocina | {% block titulo %}{% endblock titulo %}</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- Favicon-->
+    <meta name="description" content="{% block meta_desc %}Recetas de cocina, tips gastronómicos y artículos para amantes de la buena comida{% endblock meta_desc %}">
     <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
-
-    <!-- Bootstrap CSS v5.2.1 -->
+    
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
 </head>
-<body>  
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<body>
+
+<!-- ═══════ NAVBAR ═══════ -->
+<nav class="navbar navbar-expand-lg navbar-light sticky-top">
     <div class="container">
-        <a class="navbar-brand" href="{% url 'home' %}">Blog | Cocina</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span
-                class="navbar-toggler-icon"></span></button>
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <i class="bi bi-bookmark-heart-fill me-1"></i>Blog Cocina
+        </a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'articulos:listarArticulos' %}">Articulos</a></li>
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Inicio</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'articulos:listar_articulos' %}">Recetas</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'contacto:contacto' %}">Contacto</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'acerca_de' %}">Acerca de</a></li>
-                <!-- SI ES SUPER USUARIO LE APAREZCA LA OPCION DE ADMIN DE LA PAGINA -->
-                
-                {% if user.is_authenticated and user.is_staff or user.is_superuser  %}
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                        Menu Colaborador
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="{% url 'articulos:addarticulo' %}">Crear Articulo</a></li>
-                        <li><a class="dropdown-item" href="{% url 'articulos:addcategoria' %}">Crear Categoría</a></li>
-                        <hr>
-                        <li><a class="dropdown-item" href="{% url 'articulos:listarCategorias' %}">Categorias</a></li>
-                        <hr>
-                        <li><a class="dropdown-item" href="{% url 'contacto:mensajes' %}">Mensajes Contactos</a></li>
-                        {% if user.is_authenticated and user.is_superuser %}
-                        <hr>
-                        <li><a class="dropdown-item" href="{% url 'administrador' %}">Aministrador</a></li>
-                        {% endif %}
-                    </ul>
-                </li>
-                {% endif %}
-            
-                <form class="d-flex">
-                    {% if user.is_authenticated %}
-                        {% if not user.is_superuser and not user.is_staff  %}
-                            <button class="btn btn-outline-light" type="button"><strong>{{ user.username }}</strong>____(Miembro)</button>
-                        
-                        {% elif user.is_staff and not user.is_superuser  %}
-                            <button class="btn btn-outline-light" type="button"><strong>{{ user.username }}</strong>____(Colaborador)</button>
-                        {% else %}
-                            <button class="btn btn-outline-light" type="button"><strong>{{ user.username }}</strong>____(SuperUser)</button>
-                        {% endif %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}"><strong>Cerra Sesión</strong></a></li>
-                    {% else %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'registro' %}"><strong>Registrarse</strong></a></li>
-                        <li class="nav-item"><a class="nav-link " href="{% url 'login' %}"><strong>Iniciar Sesión</strong></a></li>
+
+                {% if user.is_authenticated %}
+                    {% if user.es_colaborador or user.es_administrador %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-plus-circle me-1"></i>Crear
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'articulos:crear_articulo' %}"><i class="bi bi-file-earmark-plus me-2"></i>Receta</a></li>
+                            <li><a class="dropdown-item" href="{% url 'articulos:crear_categoria' %}"><i class="bi bi-tag me-2"></i>Categoría</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'articulos:listar_categorias' %}"><i class="bi bi-list-ul me-2"></i>Categorías</a></li>
+                            {% if user.es_administrador %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'contacto:mensajes' %}"><i class="bi bi-envelope me-2"></i>Mensajes</a></li>
+                            <li><a class="dropdown-item" href="{% url 'administrador' %}"><i class="bi bi-gear me-2"></i>Admin</a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
                     {% endif %}
-                </form>
-                
-                
+                {% endif %}
+
+                <!-- Auth -->
+                <div class="d-flex align-items-center ms-lg-2">
+                    <button class="theme-toggle me-2" onclick="toggleTheme()" type="button">
+                        <i class="bi bi-moon-fill"></i>
+                        <span class="label">Tema</span>
+                    </button>
+                    {% if user.is_authenticated %}
+                        <span class="badge bg-light text-dark py-2 px-3 rounded-pill small me-2">
+                            <i class="bi bi-person-circle me-1"></i>{{ user.username }}
+                        </span>
+                        <a class="nav-link py-1" href="{% url 'logout' %}">
+                            <i class="bi bi-box-arrow-right"></i>
+                        </a>
+                    {% else %}
+                        <a class="nav-link" href="{% url 'login' %}">Entrar</a>
+                        <a class="btn btn-primary btn-sm ms-2" href="{% url 'registro' %}">Registro</a>
+                    {% endif %}
+                </div>
             </ul>
         </div>
     </div>
 </nav>
-    <main>
 
+    <main>
         {% block contenido %}
         {% endblock contenido %}
-
     </main>
-    <!-- Footer-->
-    <footer class="bg-dark py-4 mt-auto">
-        <div class="container px-5">
-            <div class="row align-items-center justify-content-between flex-column flex-sm-row">
-                <div class="col-auto">
-                    <div class="small m-0 text-white">Copyright &copy; Your Website 2023</div>
-                </div>
-                <div class="col-auto">
-                    <a class="link-light small" href="#!">Privacy</a>
-                    <span class="text-white mx-1">&middot;</span>
-                    <a class="link-light small" href="#!">Terms</a>
-                    <span class="text-white mx-1">&middot;</span>
-                    <a class="link-light small" href="#!">Contact</a>
+
+<!-- ═══════ FOOTER ═══════ -->
+<footer class="site-footer">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="brand">Blog <span>Cocina</span></div>
+                <p class="description">
+                    Recetas, tips y artículos para los amantes de la cocina. 
+                    Descubrí nuevas recetas, compartí tus creaciones y formá parte 
+                    de nuestra comunidad gastronómica.
+                </p>
+                <div class="social-links">
+                    <a href="#" title="Instagram"><i class="bi bi-instagram"></i></a>
+                    <a href="#" title="Facebook"><i class="bi bi-facebook"></i></a>
+                    <a href="#" title="Pinterest"><i class="bi bi-pinterest"></i></a>
+                    <a href="#" title="YouTube"><i class="bi bi-youtube"></i></a>
                 </div>
             </div>
+            <div class="col-lg-2 offset-lg-2">
+                <h5>Navegación</h5>
+                <a href="{% url 'home' %}">Inicio</a>
+                <a href="{% url 'articulos:listar_articulos' %}">Recetas</a>
+                <a href="{% url 'contacto:contacto' %}">Contacto</a>
+                <a href="{% url 'acerca_de' %}">Acerca de</a>
+            </div>
+            <div class="col-lg-2">
+                <h5>Categorías</h5>
+                {% for cat in categorias_footer|slice:":5" %}
+                <a href="{% url 'articulos:listar_articulos' %}?categoria={{ cat.pk }}">{{ cat.descripcion }}</a>
+                {% empty %}
+                <a href="{% url 'articulos:listar_articulos' %}">Todas las recetas</a>
+                {% endfor %}
+            </div>
+            <div class="col-lg-2">
+                <h5>Cuenta</h5>
+                {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}">Cerrar sesión</a>
+                {% else %}
+                <a href="{% url 'login' %}">Iniciar sesión</a>
+                <a href="{% url 'registro' %}">Registrarse</a>
+                {% endif %}
+            </div>
         </div>
-    </footer>
-    <!-- Bootstrap JavaScript Libraries -->
+        <div class="footer-bottom text-center">
+            <i class="bi bi-c-circle me-1"></i> {% now "Y" %} Blog de Cocina. Hecho con Django & Python.
+        </div>
+    </div>
+</footer>
+
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
         integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
         </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
         integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
         </script>
+    
+    <!-- Scripts personalizados -->
+    <script src="{% static 'js/scripts.js' %}"></script>
 </body>
-
 </html>

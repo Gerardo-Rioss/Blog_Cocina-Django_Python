@@ -1,90 +1,124 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block titulo %}Articulos{% endblock titulo %}
+{% block titulo %}Recetas{% endblock titulo %}
+
+{% block meta_desc %}Explorá todas nuestras recetas de cocina, filtrá por categoría y encontrá la próxima receta que vas a preparar.{% endblock meta_desc %}
 
 {% block contenido %}
 
-    <!-- Page content-->
+<section class="py-5">
     <div class="container">
-      <div class="row">    
-          <div class="col-lg-8"> 
-
-            <section class="py-5">
-              <div class="container px-5">
-                <div class="row gx-5">
-                  <!-- LISTA TODOS LOS ARTICULOS Y SOLO MUESTRA BORRAR Y EDITAR SI ES EL AUTOR O SUPER ADMIN -->
-
-                  {% if articulos %}
-                    {% for articulo in articulos %}
-                      <div class="col-lg-6 mb-5">
-                        <div class="card h-100 shadow border-0">
-                          <img class="card-img-top" src="{{ articulo.imagen.url }}" alt="..." />
-                          <div class="card-body p-4">
-                            <a class="text-decoration-none link-dark stretched-link" href="{% url 'articulos:detalleArticulos' articulo.pk %}">
-                              <div class="h5 card-title mb-3">{{ articulo.titulo }}</div>
-                              <div class="text-muted fst-italic mb-2">{{articulo.fecha_publicacion}}</div>
-                            </a>
-                            <a class="badge bg-secondary text-decoration-none link-light" href="#!">{{articulo.categoria_articulo}}</a>
-                            <p class="card-text mb-0">{{ articulo.contenido_breve }}</p>
-                            <div class="text-end fst-italic mb-2">{{articulo.usuario_articulo.first_name}}, {{articulo.usuario_articulo.last_name}}</div>
-                          </div>
-                        </div>
-                      </div>
+        <div class="section-header reveal">
+            <span class="subtitle">Nuestras recetas</span>
+            <h2>
+                {% if request.GET.categoria %}
+                    {% for cat in categorias %}
+                        {% if cat.pk|stringformat:"i" == request.GET.categoria %}
+                            {{ cat.descripcion }}
+                        {% endif %}
                     {% endfor %}
-                  {% else %}
-                    <h2>No hay Articulos</h>
-                  {% endif %}
+                {% else %}
+                    Todas las Recetas
+                {% endif %}
+            </h2>
+            <div class="divider-line"></div>
+        </div>
 
-
+        <div class="row g-4">
+            <!-- Sidebar filtros -->
+            <div class="col-lg-3 order-lg-2">
+                <div class="card border-0 bg-light p-4 mb-4 reveal">
+                    <h5 class="fw-bold mb-3" style="font-family:var(--font-display);">
+                        <i class="bi bi-funnel me-2"></i>Filtrar
+                    </h5>
+                    <div class="mb-4">
+                        <label class="small text-muted fw-semibold text-uppercase mb-2 d-block">Categoría</label>
+                        <select id="filtro-categoria" class="form-select">
+                            <option value="">Todas</option>
+                            {% for cat in categorias %}
+                            <option value="{{ cat.pk }}" {% if request.GET.categoria == cat.pk|stringformat:"i" %}selected{% endif %}>
+                                {{ cat.descripcion }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="small text-muted fw-semibold text-uppercase mb-2 d-block">Orden</label>
+                        <div class="d-flex flex-column gap-1">
+                            <a href="{% url 'articulos:listar_articulos' %}" class="btn btn-sm btn-outline-primary text-start">
+                                <i class="bi bi-clock me-2"></i>Más recientes
+                            </a>
+                            <a href="?antiguedad_asc=1" class="btn btn-sm btn-outline-primary text-start">
+                                <i class="bi bi-arrow-up me-2"></i>Más antiguos
+                            </a>
+                            <a href="?orden_asc=1" class="btn btn-sm btn-outline-primary text-start">
+                                <i class="bi bi-sort-alpha-up me-2"></i>A-Z
+                            </a>
+                            <a href="?orden_desc=1" class="btn btn-sm btn-outline-primary text-start">
+                                <i class="bi bi-sort-alpha-down me-2"></i>Z-A
+                            </a>
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </section>      
-          </div>
-
-    <!-- CATEGORIAS Y FILTROS -->
-    <div class="col-lg-4">     
-      <div class="container mt-lg-4">
-        <div class="card mb-2">
-          <div class="card-header">Categorias</div>
-          <div class="card-body">
-            <div class="row">
-              <div class="col-sm-6">
-                <ul class="list-unstyled mb-0">
-                  <li><a class="dropdown-item" href="{% url 'articulos:listarArticulos' %}"><strong>Todas</strong></a></li>
-                  {% for cat in categorias  %}
-                    <li><a class="dropdown-item" href="?categoria={{ cat.pk }}">{{ cat.descripcion}}</a></li>
-                  {% endfor %}                
-                </ul>
-              </div>            
             </div>
-          </div>
-        </div> 
-        <div class="card mb-2">
-          <div class="card-header">Filtros</div>
-          <div class="card-body">
-            <div class="row">
-              <div class="col-sm-6">
-                <ul class="list-unstyled mb-0">
-                  <li ><strong>Por fecha:</strong></li>
-                  <li><a class="dropdown-item" href="?antiguedad_asc=1">ASCENDENTE</a></li>
-                  <li><a class="dropdown-item" href="?antiguedad_desc=1">DESCENDENTE</a></li>
-                  <hr>
-                  <li><strong>Por Título:</strong></li>
-                  <li><a class="dropdown-item" href="?orden_asc=1">ASCENDENTE</a></li>
-                  <li><a class="dropdown-item" href="?orden_desc=1">DESCENDENTE</a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>      
-      </div>
 
-  </div>
-</div>
+            <!-- Grid de artículos -->
+            <div class="col-lg-9 order-lg-1">
+                <div class="row g-4">
+                    {% if articulos %}
+                        {% for articulo in articulos %}
+                        <div class="col-lg-6 col-md-6 reveal delay-{{ forloop.counter }}">
+                            <article class="card-article">
+                                <a href="{% url 'articulos:detalle_articulos' articulo.pk %}" class="card-img-wrap">
+                                    <img src="{{ articulo.imagen.url }}" alt="{{ articulo.titulo }}" loading="lazy" />
+                                    {% if articulo.categoria_articulo %}
+                                    <span class="card-category">{{ articulo.categoria_articulo }}</span>
+                                    {% endif %}
+                                </a>
+                                <div class="card-body">
+                                    <a href="{% url 'articulos:detalle_articulos' articulo.pk %}" class="text-decoration-none">
+                                        <h3 class="card-title">{{ articulo.titulo }}</h3>
+                                    </a>
+                                    <p class="card-excerpt">{{ articulo.contenido_breve|truncatewords:15 }}</p>
+                                    <div class="card-footer-info">
+                                        <i class="bi bi-person-circle"></i>
+                                        <span>{{ articulo.usuario_articulo.first_name }}</span>
+                                        <span>·</span>
+                                        <i class="bi bi-clock"></i>
+                                        <span>{{ articulo.fecha_publicacion|date:"d/m/Y" }}</span>
+                                        {% if user.is_authenticated and articulo.usuario_articulo == user or user.is_superuser %}
+                                        <span class="ms-auto">
+                                            <a href="{% url 'articulos:editar_articulo' pk=articulo.pk %}" class="btn-ghost" title="Editar">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a href="{% url 'articulos:eliminar_articulo' pk=articulo.pk %}" class="btn-ghost" title="Eliminar"
+                                               onclick="return confirm('¿Eliminar artículo?')">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="col-12 text-center py-5">
+                            <i class="bi bi-inbox fs-1 text-muted"></i>
+                            <h4 class="mt-3">No hay recetas todavía</h4>
+                            <p class="text-muted">Sé el primero en compartir una receta.</p>
+                            {% if user.is_authenticated and user.es_colaborador or user.es_administrador %}
+                            <a href="{% url 'articulos:crear_articulo' %}" class="btn btn-primary mt-3">
+                                <i class="bi bi-plus-circle me-2"></i>Crear receta
+                            </a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 {% endblock contenido %}
-
-
-  
-
-  

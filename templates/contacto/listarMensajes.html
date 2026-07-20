@@ -1,57 +1,69 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block titulo %}Mensajes{% endblock titulo %}
+{% block titulo %}Mensajes de Contacto{% endblock titulo %}
 
 {% block contenido %}
 
-{% if mensajes %}
+<section class="py-5">
+    <div class="container">
+        <div class="section-header reveal">
+            <span class="subtitle">Admin</span>
+            <h2>Mensajes de Contacto</h2>
+            <div class="divider-line"></div>
+        </div>
 
-    
-    
-<h2>Mensajes de contactos:</h2>
-            <div class="row justify-content-start">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Nombre</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">Teléfono</th>
-                                    <th scope="col">Mensaje</th>
-                                    <th scope="col">Fecha</th>
-                                    <th scope="col">Eliminar</th>
-                                </tr>
-                            </thead>
-                            {% for mensaje in mensajes %}
-
-                            <tbody>
-                                <tr>
-                                    <td>{{ mensaje.nombre }}</td>
-                                    <td>{{ mensaje.email }}</td>
-                                    <td>{{ mensaje.telefono }}</td>
-                                    <td>{{ mensaje.mensaje }}</td>
-                                    <td>{{ mensaje.fecha }}</td>
-                                    <td><a name="delete_mensaje" class="btn btn-danger btn-sm" href="{% url 'contacto:delete_mensaje' mensaje.pk %}"
-                                        role="button">Borrar</a></td>
-                                </tr>
-                            </tbody>
-                            {% endfor %}
-                        </table>
-                    </div>
-                </div>
-                <span class="text-center">
-                    <button type="button" class="btn btn-primary btn-sm"><a class="dropdown-item"
-                            href="{% url 'home' %}">Cancelar</a></button>
-                </span>
+        {% if mensajes %}
+        <div class="card border-0 shadow-sm reveal">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4">Nombre</th>
+                            <th>Email</th>
+                            <th>Teléfono</th>
+                            <th>Mensaje</th>
+                            <th>Fecha</th>
+                            <th class="text-center">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for mensaje in mensajes %}
+                        <tr>
+                            <td class="ps-4 fw-semibold">{{ mensaje.nombre }}</td>
+                            <td><a href="mailto:{{ mensaje.email }}" class="text-decoration-none">{{ mensaje.email }}</a></td>
+                            <td>{{ mensaje.telefono|default:"—" }}</td>
+                            <td style="max-width:250px;">
+                                <span class="d-inline-block text-truncate" style="max-width:200px;">{{ mensaje.mensaje }}</span>
+                            </td>
+                            <td class="small text-muted">{{ mensaje.fecha|date:"d/m/Y H:i" }}</td>
+                            <td class="text-center">
+                                <a href="{% url 'contacto:delete_mensaje' mensaje.pk %}" 
+                                   class="btn btn-outline-danger btn-sm"
+                                   onclick="return confirm('¿Eliminar este mensaje?')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-     
-   
-   
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-inbox fs-1 text-muted"></i>
+            <h4 class="mt-3">No hay mensajes</h4>
+            <p class="text-muted">Cuando alguien envíe un mensaje de contacto, aparecerá aquí.</p>
+        </div>
+        {% endif %}
 
-{% else %}
-    <h2>No hay mensajes</h>
-{% endif %}
+        <div class="text-center mt-4">
+            <a href="{% url 'home' %}" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-2"></i>Volver al inicio
+            </a>
+        </div>
+    </div>
+</section>
 
 {% endblock contenido %}

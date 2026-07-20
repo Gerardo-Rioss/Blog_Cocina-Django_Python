@@ -1,0 +1,87 @@
+# SDD State — refactor-calidad-codigo
+# Blog de Cocina — Django/Python
+
+change: refactor-calidad-codigo
+project: Blog_Cocina-Django_Python
+artifact_store: openspec
+
+phases:
+  proposal:
+    status: completed
+    completed_at: "2026-07-12"
+    artifact: openspec/changes/refactor-calidad-codigo/proposal.md
+  spec:
+    status: completed
+    completed_at: "2026-07-12"
+    artifact: openspec/changes/refactor-calidad-codigo/spec.md
+  design:
+    status: completed
+    completed_at: "2026-07-12"
+    artifact: openspec/changes/refactor-calidad-codigo/design.md
+  tasks:
+    status: completed
+    completed_at: "2026-07-12"
+    artifact: openspec/changes/refactor-calidad-codigo/tasks.md
+  apply:
+    status: completed
+    completed_at: "2026-07-12"
+    artifact: openspec/changes/refactor-calidad-codigo/apply-progress.md
+    note: "Batch 1 + Batch 2 + Batch 3 + Batch 4a + Batch 4b code complete. Ola 2 Security Hardening implementado. Tests de vistas e integración (Batch 4b) implementados."
+  verify:
+    status: completed
+    completed_at: "2026-07-12"
+    artifact: openspec/changes/refactor-calidad-codigo/verify-report.md
+    result: WARNING
+    summary: "Batch 1: 5 PASS, 5 WARNING, 0 FAIL. Batch 2: 8 PASS, 1 WARNING (SPEC-2.1 UserPassesTestMixin no usado), 0 FAIL. Batch 3: 10 PASS, 1 WARNING (SPEC-3.6 registro.html usa block title en vez de block titulo), 0 FAIL. Batch 4b: 4 PASS, 0 WARNING, 0 FAIL (12 clases test_views, ~78 tests vistas, 3 flujos integración, ContactoForm sin telefono). CRITICAL: tasks.md tiene 11 checkboxes sin marcar para T-3.1 a T-3.11."
+
+dependencies:
+  proposal: []
+  spec:
+    - proposal
+  design:
+    - proposal
+  tasks:
+    - spec
+    - design
+  apply:
+    - tasks
+  verify:
+    - apply
+  archive:
+    - verify
+
+next_recommended: apply
+blocked: false
+blocked_reasons: []
+
+risks:
+  - id: R1
+    description: "Migración tipo_usuario → grupos Django requiere migración de datos"
+    severity: medium
+    mitigation: "Data migration 0006 creada. Setup_groups command idempotente. Ejecutar migrate + setup_groups antes de Batch 3."
+    status: mitigated
+  - id: R2
+    description: "Sin tests antes del refactor → riesgo de regresiones"
+    severity: high
+    mitigation: "Escribir tests de caracterización antes de tocar cada módulo; priorizar señales y autorización. Ola 4 completada (Batch 4a + 4b)."
+    status: mitigated
+  - id: R3
+    description: "add_comentario standalone redirect — errores de validación se pierden (mitigado parcialmente con messages.error en Batch 3)"
+    severity: low
+    mitigation: "Batch 3 agregó messages.error. El endpoint inline en detalle_articulos funciona correctamente. Considerar eliminar endpoint standalone."
+    status: mitigated
+  - id: R4
+    description: "SPEC-2.1: UserPassesTestMixin no usado — helpers inline en vez de mixins/decorators"
+    severity: low
+    mitigation: "Desviación de forma (no de fondo). Helpers verifican grupos correctamente."
+    status: open
+  - id: R5
+    description: "tasks.md: 11 checkboxes T-3.1 a T-3.11 sin marcar — bloquea archive"
+    severity: high
+    mitigation: "Actualizar tasks.md con [x] para las 11 tareas implementadas antes de archive."
+    status: open
+  - id: R6
+    description: "SPEC-3.6: usuarios/registro.html usa {% block title %} en vez de {% block titulo %} — título roto"
+    severity: low
+    mitigation: "Cambiar línea 3 de registro.html a {% block titulo %}."
+    status: open

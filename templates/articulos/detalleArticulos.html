@@ -1,108 +1,145 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block titulo %}{{ articulo.titulo }}{% endblock titulo %}
+
+{% block meta_desc %}{{ articulo.contenido_breve|truncatewords:30 }}{% endblock meta_desc %}
+
 {% block contenido %}
 
-<!-- Contenido de la pagina-->
-<section class="py-5">
-    <div class="container px-5 my-5">
-        <div class="row gx-5">
-            <div class="col-lg-12">
-                <!-- Contenido post-->
-                <article>
-                    <!-- Post header-->
-                    <header class="mb-4">
-                        <!-- Post title-->
-                        <h1 class="fw-bolder mb-1">{{ articulo.titulo }}</h1>
-                        <!-- Post meta content-->
-                        <div class="text-muted fst-italic mb-2">{{ articulo.usuario_articulo.first_name}}, {{articulo.usuario_articulo.last_name}}</div>
-                        <div class="text-muted fst-italic mb-2">{{ articulo.fecha_publicacion }}</div>
-                        <!-- Post categories-->
-                        <a class="badge bg-secondary text-decoration-none link-light" href="#!">{{articulo.categoria_articulo }}</a>
-                    </header>
-                    <!-- Preview image figure-->
-                    <figure class="mb-4"><img class="img-fluid rounded" src="{{ articulo.imagen.url }}" alt="" />
-                    </figure>
-                    <!-- Post content-->
-                    <section class="mb-5">
-                        <p class="fs-5 mb-4">{{ articulo.contenido_completo }}</p>                        
-                        {% if user.is_authenticated and articulo.usuario_articulo == user or user.is_superuser %}
-                        <button type="button" class="btn btn-secondary btn-sm"><a class="dropdown-item"
-                                href="{% url 'articulos:editArticulo' pk=articulo.pk %}">Editar Articulo</a></button>
-                        <button type="button" class="btn btn-danger btn-sm"><a class="dropdown-item"
-                                href="{% url 'articulos:delete_articulo' pk=articulo.pk %}">Borrar Articulo</a></button>
-                        <form method="POST" action="{% url 'articulos:detalleArticulos' pk=articulo.pk %}">
-                            {% csrf_token %}
-                        </form>
+<article class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+
+                <!-- Header -->
+                <header class="article-detail-header reveal">
+                    <div class="meta mb-3">
+                        {% if articulo.categoria_articulo %}
+                        <span class="badge bg-primary rounded-pill">{{ articulo.categoria_articulo }}</span>
                         {% endif %}
-                    </section>
-                </article>
-                <section>
-                    <div class="card-body text-center">
-                        <h2 class="fw-bolder">Comentarios:</h2>
                     </div>
-                    <div class="card bg-light">
-                        <div class="card-body">
-                            {% if user.is_authenticated %}
-                            <form method="POST" action="{% url 'articulos:add_comentario' articulo.pk %}">
-                                {% csrf_token %}
-                                    <div class="form-floating mb-3">
-                                        <input class="form-control" name="comentario" type="text" placeholder="Ingrese comentario..." required />
-                                        <label for="comentario">Ingrese comentario...</label>
-                                    </div>
-                                <button type="submit" class="btn btn-success btn-sm"><a class="dropdown-item">Enviar</a></button>
-                            </form>
-                            <br>
-                            {% else %}
-                                <div class="card-body text-center">
-                                    <p class="text-muted fst-italic mb-2">"Debe iniciar sesión para poder añadir un comentario."</p>
-                                        <a href="{% url 'login' %}" class="btn btn-outline-dark">Iniciar Sesión</a>
-                                </div>
-                            {% endif %}
-                            <div class="row d-flex justify-content-center mt-100 mb-100">
-                                {% for comentario in comentarios %}
-                                <div class="col-lg-12">
-                                    <div class="card">
-                                        <div class="comment-widgets">
-                                            <!-- Comment Row -->
-                                            <div class="d-flex flex-row comment-row">
-                                                <!-- BUSCAR IMAGEN DEL USUARIO -->
-                                                
+                    <h1>{{ articulo.titulo }}</h1>
+                    <div class="meta">
+                        <i class="bi bi-person-circle fs-5"></i>
+                        <span class="fw-semibold">{{ articulo.usuario_articulo.first_name }} {{ articulo.usuario_articulo.last_name }}</span>
+                        <span class="dot"></span>
+                        <i class="bi bi-calendar3"></i>
+                        <span>{{ articulo.fecha_publicacion|date:"d F Y" }}</span>
+                    </div>
+                </header>
 
+                <!-- Imagen destacada -->
+                <figure class="article-detail-image reveal">
+                    <img src="{{ articulo.imagen.url }}" alt="{{ articulo.titulo }}" />
+                </figure>
 
-                                                <div class="p-2"><img src="{{ comentario.usuario_comentario.imagen.url}}"
-                                                        alt="user" width="50" class="rounded-circle"></div>
-                                                <div class="comment-text active w-100">
-                                                    <h6 class="font-medium">
-                                                        <strong>{{comentario.usuario_comentario}}</strong></h6> 
-                                                        <span class="m-b-15 d-block"> {{comentario.comentario}} </span>
-                                                        
-                                                    <div class="comment-footer"> 
-                                                        <div class="text-muted fst-italic mb-2">{{comentario.fecha_publicacion}}</div>                                                        
-                                                        <span class="text-muted float-end">
-                                                            {% if comentario.usuario_comentario == user.username or user.is_staff or user.is_superuser %}                                                            
-                                                            <button type="button" class="btn btn-secondary btn-sm"><a class="dropdown-item"
-                                                                    href="{% url 'articulos:edit_comentario' comentario_id=comentario.pk %}">Editar</a></button>
-                                                            <button type="button" class="btn btn-danger btn-sm"><a class="dropdown-item"
-                                                                    href="{% url 'articulos:delete_comentario' comentario_id=comentario.pk %}">Borrar</a></button>
-                                                            {% endif %}                                                          
-                                                        </span>
-                                                    </div>                                                        
-                                                </div>                                                
-                                            </div> <!-- Comment Row -->
-                                        </div>
-                                    </div>
+                <!-- Contenido -->
+                <div class="article-content reveal">
+                    {{ articulo.contenido_completo|linebreaks }}
+                </div>
+
+                <!-- Acciones -->
+                {% if user.is_authenticated and articulo.usuario_articulo == user or user.is_superuser %}
+                <div class="d-flex gap-2 mb-5 reveal">
+                    <a href="{% url 'articulos:editar_articulo' pk=articulo.pk %}" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-pencil me-1"></i>Editar
+                    </a>
+                    <a href="{% url 'articulos:eliminar_articulo' pk=articulo.pk %}" class="btn btn-outline-danger btn-sm"
+                       onclick="return confirm('¿Estás seguro de eliminar este artículo?')">
+                        <i class="bi bi-trash me-1"></i>Eliminar
+                    </a>
+                </div>
+                {% endif %}
+
+                <hr class="my-5">
+
+                <!-- ═══════ COMENTARIOS ═══════ -->
+                <section class="reveal">
+                    <h3 class="fw-bold mb-4" style="font-family:var(--font-display);">
+                        <i class="bi bi-chat-dots me-2"></i>Comentarios
+                        <span class="badge bg-primary rounded-pill ms-2">{{ comentarios|length }}</span>
+                    </h3>
+
+                    <!-- Formulario -->
+                    {% if user.is_authenticated %}
+                    <form method="POST" action="{% url 'articulos:agregar_comentario' articulo.pk %}" class="mb-5 p-4 bg-light rounded-3">
+                        {% csrf_token %}
+                        <div class="form-floating mb-3">
+                            <textarea class="form-control" name="comentario" id="comentario" 
+                                      placeholder="Escribe un comentario..." style="height: 100px" required></textarea>
+                            <label for="comentario"><i class="bi bi-pencil me-1"></i>Escribe un comentario...</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send me-1"></i>Publicar comentario
+                        </button>
+                    </form>
+                    {% else %}
+                    <div class="text-center p-4 bg-light rounded-3 mb-5">
+                        <p class="text-muted mb-2">
+                            <i class="bi bi-lock me-1"></i>Iniciá sesión para comentar
+                        </p>
+                        <a href="{% url 'login' %}" class="btn btn-primary btn-sm">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>Entrar
+                        </a>
+                        <a href="{% url 'registro' %}" class="btn btn-outline-primary btn-sm ms-2">
+                            <i class="bi bi-person-plus me-1"></i>Registrarse
+                        </a>
+                    </div>
+                    {% endif %}
+
+                    <!-- Lista de comentarios -->
+                    {% if comentarios %}
+                        {% for comentario in comentarios %}
+                        <div class="comment-modern">
+                            <div class="avatar">
+                                {% if comentario.usuario_comentario.imagen %}
+                                <img src="{{ comentario.usuario_comentario.imagen.url }}" alt="{{ comentario.usuario_comentario.username }}"
+                                     width="42" height="42" style="object-fit:cover;border-radius:50%;" />
+                                {% else %}
+                                <i class="bi bi-person-circle fs-1 text-muted"></i>
+                                {% endif %}
+                            </div>
+                            <div class="comment-body">
+                                <div>
+                                    <span class="comment-author">{{ comentario.usuario_comentario.username }}</span>
+                                    <span class="comment-date">{{ comentario.fecha_publicacion|date:"d/m/Y H:i" }}</span>
                                 </div>
-                                {% endfor %}                               
+                                <div class="comment-text">{{ comentario.comentario }}</div>
+                                {% if comentario.usuario_comentario == user or user.is_staff or user.is_superuser %}
+                                <div class="comment-actions">
+                                    <a href="{% url 'articulos:editar_comentario' comentario_id=comentario.pk %}" 
+                                       class="btn-ghost text-primary">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{% url 'articulos:eliminar_comentario' comentario_id=comentario.pk %}" 
+                                       class="btn-ghost"
+                                       onclick="return confirm('¿Eliminar comentario?')">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                                {% endif %}
                             </div>
                         </div>
+                        {% endfor %}
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-chat-square-text fs-1 text-muted"></i>
+                        <p class="text-muted mt-2">No hay comentarios aún. ¡Sé el primero!</p>
+                    </div>
+                    {% endif %}
                 </section>
-                <span class="text-muted float-end">
-                <button type="button" class="btn btn-dark btn-sm"><a class="dropdown-item"
-                        href="{% url 'articulos:listarArticulos' %}">Volver</a></button>                
-                </span>
+
+                <!-- Volver -->
+                <div class="text-center mt-5">
+                    <a href="{% url 'articulos:listar_articulos' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-left me-2"></i>Volver a recetas
+                    </a>
+                </div>
+
             </div>
         </div>
     </div>
-</section>
+</article>
+
 {% endblock contenido %}

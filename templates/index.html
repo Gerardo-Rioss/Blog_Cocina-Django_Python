@@ -1,212 +1,137 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block titulo %}Index{% endblock titulo %}
+{% block titulo %}Recetas, Tips y Artículos de Cocina{% endblock titulo %}
+
+{% block meta_desc %}Descubrí las mejores recetas de cocina, tips gastronómicos y artículos para amantes de la buena comida. Unite a nuestra comunidad.{% endblock meta_desc %}
 
 {% block contenido %}
-<section class="py-5">
-    <div class="container px-5">
-        <h1 class="fw-bolder fs-5 mb-4"></h1>
-        <div class="card border-0 shadow rounded-3 overflow-hidden">
-            <div class="card-body p-0">
-                
-                <div class="row gx-0">
-                    <div class="col-lg-6 col-xl-5 py-lg-5">
-                        <div class="p-4 p-md-5">
 
-                            <div class="h2 fw-bolder">¡Bienvenido a Delicias Culinarias!</div>
-                            <p>
-                                En Delicias Culinarias, nuestro objetivo es llevar el apasionante mundo de la cocina
-                                directamente a tu hogar. Sumérgete
-                                en un viaje gastronómico lleno de sabores, aromas y recetas que despertarán tu
-                                creatividad culinaria y deleitarán tu
-                                paladar. Nuestro blog está diseñado para todos los amantes de la cocina, desde
-                                principiantes entusiastas hasta expertos
-                                chefs, brindando una amplia variedad de contenido para inspirar, educar y, sobre todo,
-                                compartir el amor por la comida.</p>
-
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-xl-7">
-                        <img class="card-img-top" src="{% static 'img/img1.jpg' %}" alt="" />                       
-
-                    </div>
-                </div>
+<!-- ═══════ HERO — Artículo Destacado ═══════ -->
+{% if ultimos_articulos %}
+<section class="hero-featured">
+    {% with destacado=ultimos_articulos.0 %}
+    <img class="hero-featured-bg" src="{{ destacado.imagen.url }}" alt="{{ destacado.titulo }}" />
+    <div class="hero-featured-overlay"></div>
+    <div class="container">
+        <div class="hero-featured-content animate-fade-up">
+            <span class="category-badge">{{ destacado.categoria_articulo|default:"Destacado" }}</span>
+            <h1>{{ destacado.titulo }}</h1>
+            <p>{{ destacado.contenido_breve|truncatewords:25 }}</p>
+            <div class="hero-meta">
+                <i class="bi bi-person-circle fs-5"></i>
+                <span>{{ destacado.usuario_articulo.first_name }} {{ destacado.usuario_articulo.last_name }}</span>
+                <span class="divider"></span>
+                <i class="bi bi-clock"></i>
+                <span>{{ destacado.fecha_publicacion|date:"d F Y" }}</span>
+                <span class="divider"></span>
+                <a href="{% url 'articulos:detalle_articulos' destacado.pk %}" class="btn btn-primary btn-sm">
+                    Leer receta <i class="bi bi-arrow-right ms-1"></i>
+                </a>
             </div>
         </div>
     </div>
+    {% endwith %}
 </section>
+{% endif %}
 
-<!-- Blog seccion previa-->
+<!-- ═══════ ÚLTIMAS RECETAS ═══════ -->
+{% if ultimos_articulos %}
 <section class="py-5">
-    <div class="container px-5">
-        <h2 class="fw-bolder fs-5 mb-4">Explora Nuestro Contenido:</h2>
-        <div class="row gx-5">
-            <div class="col-lg-4 mb-5">
-                <div class="card h-100 shadow border-0">
-                    <img class="card-img-top" src="{% static 'img/img2.jpg' %}" alt="..." />
-                    <div class="card-body p-4">
-                        <a class="text-decoration-none link-dark stretched-link" href="#!">
-                            <div class="h5 card-title mb-3">Recetas para Todos los Gustos:</div>
-                        </a>
-                        <p class="card-text mb-0">Descubre recetas exquisitas para cualquier ocasión, desde comidas
-                            familiares hasta cenas románticas y platos para
-                            sorprender a tus invitados. Nuestra colección incluye opciones para vegetarianos, veganos y
-                            aquellos con preferencias
-                            alimentarias específicas.</p>
-                    </div>
+    <div class="container">
+        <div class="section-header reveal">
+            <span class="subtitle">Recetas frescas</span>
+            <h2>Últimas Recetas</h2>
+            <div class="divider-line"></div>
+        </div>
 
-                </div>
-            </div>
-            <div class="col-lg-4 mb-5">
-                <div class="card h-100 shadow border-0">
-                    <img class="card-img-top" src="{% static 'img/img3.jpg' %}" alt="..." />
-                    <div class="card-body p-4">
-                        <a class="text-decoration-none link-dark stretched-link" href="#!">
-                            <div class="h5 card-title mb-3">Cocina Internacional:</div>
+        <div class="row g-4">
+            {% for articulo in ultimos_articulos %}
+            {% if forloop.counter0 > 0 %}
+            <div class="col-lg-4 col-md-6 reveal delay-{{ forloop.counter }}">
+                <article class="card-article">
+                    <a href="{% url 'articulos:detalle_articulos' articulo.pk %}" class="card-img-wrap">
+                        <img src="{{ articulo.imagen.url }}" alt="{{ articulo.titulo }}" loading="lazy" />
+                        {% if articulo.categoria_articulo %}
+                        <span class="card-category">{{ articulo.categoria_articulo }}</span>
+                        {% endif %}
+                    </a>
+                    <div class="card-body">
+                        <a href="{% url 'articulos:detalle_articulos' articulo.pk %}" class="text-decoration-none">
+                            <h3 class="card-title">{{ articulo.titulo }}</h3>
                         </a>
-                        <p class="card-text mb-0">Acompáñanos en un viaje culinario alrededor del mundo mientras
-                            exploramos las maravillas de la cocina internacional.
-                            Desde la picante comida tailandesa hasta la reconfortante comida italiana, te guiaremos a
-                            través de recetas auténticas y
-                            técnicas tradicionales.</p>
-                    </div>
-                    <div class="card-footer p-4 pt-0 bg-transparent border-top-0">
-                        <div class="d-flex align-items-end justify-content-between">
-
+                        <p class="card-excerpt">{{ articulo.contenido_breve|truncatewords:18 }}</p>
+                        <div class="card-footer-info">
+                            <i class="bi bi-person-circle"></i>
+                            <span>{{ articulo.usuario_articulo.first_name }}</span>
+                            <span>·</span>
+                            <i class="bi bi-clock"></i>
+                            <span>{{ articulo.fecha_publicacion|date:"d/m/Y" }}</span>
                         </div>
                     </div>
-                </div>
+                </article>
             </div>
-            <div class="col-lg-4 mb-5">
-                <div class="card h-100 shadow border-0">
-                    <img class="card-img-top" src="{% static 'img/img5.jpg' %}" alt="..." />
-                    <div class="card-body p-4">
-                        <a class="text-decoration-none link-dark stretched-link" href="#!">
-                            <div class="h5 card-title mb-3">Tips y Trucos Culinarios:</div>
-                        </a>
-                        <p class="card-text mb-0">Aprende consejos valiosos para mejorar tus habilidades en la cocina.
-                            Desde técnicas básicas de corte hasta cómo combinar
-                            sabores y texturas, nuestros tips te ayudarán a convertirte en un maestro culinario en tu
-                            propia cocina.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 mb-5">
-                <div class="card h-100 shadow border-0">
-                    <img class="card-img-top" src="{% static 'img/img6.jpg' %}" alt="..." />
-                    <div class="card-body p-4">
-                        <a class="text-decoration-none link-dark stretched-link" href="#!">
-                            <div class="h5 card-title mb-3">Postres Irresistibles:</div>
-                        </a>
-                        <p class="card-text mb-0">Déjate tentar por nuestra selección de postres decadentes y
-                            saludables. Descubre cómo endulzar tu vida sin exceso de
-                            azúcar, utilizando ingredientes naturales y técnicas de repostería creativas.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 mb-5">
-                <div class="card h-100 shadow border-0">
-                    <img class="card-img-top" src="{% static 'img/img7.jpg' %}" alt="..." />
-                    <div class="card-body p-4">
-                        <a class="text-decoration-none link-dark stretched-link" href="#!">
-                            <div class="h5 card-title mb-3">Comida Rápida y Saludable:</div>
-                        </a>
-                        <p class="card-text mb-0">Para aquellos días ocupados, te ofrecemos recetas rápidas y saludables
-                            para que disfrutes de deliciosas comidas sin
-                            sacrificar el sabor o la calidad de los ingredientes.</p>
-                    </div>
-                </div>
-            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-5 reveal">
+            <a href="{% url 'articulos:listar_articulos' %}" class="btn btn-outline-primary btn-lg">
+                Ver todas las recetas <i class="bi bi-arrow-right ms-2"></i>
+            </a>
         </div>
     </div>
 </section>
+{% endif %}
 
+<!-- ═══════ CATEGORÍAS ═══════ -->
+{% if categorias_footer %}
 <section class="py-5 bg-light">
-    <div class="container my-5">
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <!-- Encabezado con decoración -->
-                <div class="text-center mb-5">
-                    <h2 class="display-4 fw-bold text-primary mb-3">Únete a Nuestra Comunidad</h2>
-                    <div class="d-flex justify-content-center align-items-center mb-4">
-                        <hr class="d-inline-block mx-3" style="width: 70px;">
-                        <i class="bi bi-heart-fill text-danger fs-4"></i>
-                        <hr class="d-inline-block mx-3" style="width: 70px;">
-                    </div>
-                    <p class="lead text-muted">
-                        En <strong class="text-primary">Delicias Culinarias</strong>, la cocina es un acto de amor y compartir. 
-                        ¡Nos encantaría que te unas a nuestra comunidad culinaria!
-                    </p>
-                </div>
-
-                <!-- Tarjetas de beneficios -->
-                <div class="row g-4 mb-5">
-                    <div class="col-md-6">
-                        <div class="card h-100 border-0 shadow-sm hover-shadow transition">
-                            <div class="card-body p-4">
-                                <div class="d-flex align-items-center mb-3">
-                                    <i class="bi bi-pencil-square text-success fs-3 me-3"></i>
-                                    <h3 class="card-title mb-0"> <strong class="text-primary">Comparte tus Creaciones</strong></h3>
-                                    
-                                </div>
-                                <p class="card-text">Sube tus propias recetas y experiencias culinarias para inspirar a otros.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card h-100 border-0 shadow-sm hover-shadow transition">
-                            <div class="card-body p-4">
-                                <div class="d-flex align-items-center mb-3">
-                                    <i class="bi bi-chat-dots text-info fs-3 me-3"></i>
-                                    <h3 class="card-title mb-0"> <strong class="text-primary">Interactúa y Aprende</strong></h3>
-                                </div>
-                                <p class="card-text">Conecta con otros apasionados de la cocina y comparte conocimientos.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card h-100 border-0 shadow-sm hover-shadow transition">
-                            <div class="card-body p-4">
-                                <div class="d-flex align-items-center mb-3">
-                                    <i class="bi bi-trophy text-warning fs-3 me-3"></i>
-                                    <h3 class="card-title mb-0"> <strong class="text-primary">Participa y Gana</strong></h3>
-                                </div>
-                                <p class="card-text">Únete a emocionantes concursos y desafíos culinarios mensuales.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card h-100 border-0 shadow-sm hover-shadow transition">
-                            <div class="card-body p-4">
-                                <div class="d-flex align-items-center mb-3">
-                                    <i class="bi bi-newspaper text-secondary fs-3 me-3"></i>
-                                    <h3 class="card-title mb-0"> <strong class="text-primary">Mantente Actualizado</strong></h3>                                    
-                                </div>
-                                <p class="card-text">Recibe las últimas tendencias y noticias del mundo gastronómico.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Llamada a la acción -->
-                <div class="text-center">
-                    <p class="lead mb-4">
-                        No importa si eres un <span class="text-success">experto</span> o un <span class="text-primary">principiante</span>,
-                        ¡hay un lugar para ti en nuestra comunidad!
-                    </p>
-                    
-                </div>
+    <div class="container">
+        <div class="section-header reveal">
+            <span class="subtitle">Explorar</span>
+            <h2>Categorías</h2>
+            <div class="divider-line"></div>
+        </div>
+        <div class="row justify-content-center g-3 reveal">
+            {% for cat in categorias_footer %}
+            <div class="col-auto">
+                <a href="{% url 'articulos:listar_articulos' %}?categoria={{ cat.pk }}" class="category-pill">
+                    <span class="emoji">
+                    {% if 'Entrada' in cat.descripcion %}🥗
+                    {% elif 'Principal' in cat.descripcion %}🍖
+                    {% elif 'Pasta' in cat.descripcion %}🍝
+                    {% elif 'Ensalada' in cat.descripcion %}🥬
+                    {% elif 'Sopa' in cat.descripcion %}🥣
+                    {% elif 'Postre' in cat.descripcion %}🍰
+                    {% elif 'Pan' in cat.descripcion %}🥖
+                    {% elif 'Internacional' in cat.descripcion %}🌍
+                    {% elif 'Saludable' in cat.descripcion %}🥦
+                    {% elif 'Bebida' in cat.descripcion %}🍹
+                    {% else %}🍳
+                    {% endif %}
+                    </span>
+                    {{ cat.descripcion }}
+                </a>
             </div>
+            {% endfor %}
         </div>
     </div>
 </section>
+{% endif %}
 
-
-
-</main>
-
-
-
+<!-- ═══════ NEWSLETTER ═══════ -->
+<section class="py-5">
+    <div class="container">
+        <div class="newsletter-section reveal">
+            <h3>¿Te gusta cocinar?</h3>
+            <p>Recibí las mejores recetas directamente en tu correo. Sin spam, solo buena comida.</p>
+            <form class="newsletter-form" onsubmit="event.preventDefault(); showToast('¡Gracias por suscribirte! 🎉', 'success');">
+                <input type="email" placeholder="tu@email.com" required />
+                <button type="submit" class="btn btn-primary">Suscribirme</button>
+            </form>
+        </div>
+    </div>
+</section>
 
 {% endblock contenido %}
