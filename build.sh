@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Script de build para Render
-set -o errexit
+set -o errexit  # Frena ante cualquier error
 
 echo "🌱 Instalando dependencias..."
 pip install -r requirements.txt
@@ -11,7 +11,7 @@ python manage.py collectstatic --noinput --clear
 echo "🗄️  Aplicando migraciones..."
 python manage.py migrate --noinput
 
-echo "🌿 Verificando datos iniciales..."
-python manage.py seed_data 2>&1 || echo "  ⚠️ Seed ya ejecutado (ignorar errores de duplicados)"
+echo "🌿 Poblando datos de prueba..."
+python manage.py seed_data
 
 echo "✅ Build completado exitosamente"
