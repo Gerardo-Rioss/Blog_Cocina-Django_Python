@@ -8,7 +8,6 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.shortcuts import redirect
 from django.views.generic import RedirectView
-from django.views.static import serve as media_serve
 
 from . import views
 
@@ -26,7 +25,6 @@ urlpatterns = [
     path('contacto/', include('apps.contacto.urls')),
     path('administrador/', consola_admin, name='administrador'),
 
-    # ─── Redirects temporarios de URLs viejas a nuevas ───
     path('articulos/addArticulo/', RedirectView.as_view(
         pattern_name='articulos:crear_articulo', permanent=True)),
     path('articulos/detalleArticulos/<int:pk>/', RedirectView.as_view(
@@ -49,15 +47,5 @@ urlpatterns = [
         pattern_name='articulos:eliminar_comentario', permanent=True)),
 ]
 
-# ─── Servir media tanto en dev como en produccion ───
-# WhiteNoise sirve archivos static, pero no media.
-# Django.views.static.serve funciona con DEBUG=True y False.
-urlpatterns += [
-    path('media/<path:path>', media_serve, {
-        'document_root': settings.MEDIA_ROOT,
-    }),
-]
-
-# En desarrollo, servir tambien static via Django
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

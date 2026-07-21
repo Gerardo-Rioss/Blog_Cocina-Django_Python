@@ -30,8 +30,8 @@ class Command(BaseCommand):
         copiadas = 0
         for img in IMAGENES_POR_ARTICULO:
             src = repo_media / img
-            if src.exists():
-                dst = dest_dir / img
+            dst = dest_dir / img
+            if src.exists() and src.resolve() != dst.resolve():
                 shutil.copy2(src, dst)
                 copiadas += 1
         self.stdout.write(f'  ✅ {copiadas} imagenes copiadas a media/')
@@ -41,8 +41,8 @@ class Command(BaseCommand):
         self.stdout.write(f'  🗑️  {viejos.count()} articulos con imagenes genericas eliminados')
         viejos.delete()
 
-        # 3. Re-asignar imagenes correctas a los articulos restantes
-        #    (los creados por seed_data que usaron el fallback de nombres random)
+        # 3. Re-asignar imagenes correctas a los articulos
+        #    (los que usan el nombre correcto pero pueden tener paths viejos)
         for i, art in enumerate(Articulo.objects.all().order_by('fecha_publicacion')):
             nombre_img = IMAGENES_POR_ARTICULO[i % len(IMAGENES_POR_ARTICULO)]
             art.imagen.name = f'articulos/{nombre_img}'

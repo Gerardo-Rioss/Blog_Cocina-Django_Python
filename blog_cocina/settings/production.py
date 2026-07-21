@@ -39,15 +39,19 @@ else:
     }
 
 # ─── Static files con WhiteNoise ───
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATIC_URL = '/static/'
 
 # ─── Media files ───
-# NO incluimos media en STATICFILES porque ManifestStorage renombra los archivos.
-# Servimos media via URL pattern en urls.py (funciona con DEBUG=False).
-MEDIA_URL = '/media/'
+# Se copian a staticfiles/ durante el build y las sirve WhiteNoise
+MEDIA_URL = '/static/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'media',
+    BASE_DIR / 'static',
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
