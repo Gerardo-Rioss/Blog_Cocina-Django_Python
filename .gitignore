@@ -3,7 +3,6 @@ __pycache__/
 *.pyo
 .env
 db.sqlite3
-media/articulos/
 media/usuarios/
 staticfiles/
 venv/
