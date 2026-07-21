@@ -11,17 +11,10 @@ python manage.py collectstatic --noinput --clear
 echo "🗄️  Aplicando migraciones..."
 python manage.py migrate --noinput
 
-echo "♻️  Reseteando datos para asegurar imagenes correctas..."
-python manage.py shell -c "
-from apps.articulos.models import Articulo, Comentario
-from apps.contacto.models import Contacto
-Comentario.objects.all().delete()
-Articulo.objects.all().delete()
-Contacto.objects.all().delete()
-print('✅ Datos viejos eliminados')
-"
-
-echo "🌿 Poblando datos de prueba con imagenes Unsplash..."
+echo "🌿 Poblando datos de prueba..."
 python manage.py seed_data
+
+echo "🖼️  Forzando imagenes Unsplash reales..."
+python manage.py fix_images
 
 echo "✅ Build completado exitosamente"
