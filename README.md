@@ -435,7 +435,7 @@ Este proyecto fue desarrollado como trabajo final del **Informatorio 2024** — 
   <br/>
   <sub>
     <a href="https://github.com/Gerardo-Rioss">GitHub</a> · 
-    <a href="https://rios-gerardo.netlify.app">Portfolio</a> · 
+    <a href="https://gerariosdev.netlify.app">Portfolio</a> · 
     <a href="https://linkedin.com/in/gerardrioss/">LinkedIn</a>
   </sub>
 </div>
