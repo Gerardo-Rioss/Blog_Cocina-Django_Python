@@ -174,7 +174,7 @@ def _imagen_articulo(idx):
     except (IOError, OSError):
         font = font_small = ImageFont.load_default()
 
-    draw.text((ancho//2 - 100, alto//2 + 50), "🍳 Blog Cocina",
+    draw.text((ancho//2 - 100, alto//2 + 50), "Blog Cocina",
               fill='white', font=font)
 
     buf = BytesIO()
