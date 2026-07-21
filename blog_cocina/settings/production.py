@@ -38,15 +38,17 @@ else:
         }
     }
 
-# ─── Static + Media files con WhiteNoise ───
+# ─── Static + Media con WhiteNoise ───
+# Incluimos media/ como directorio estatico para que collectstatic lo copie
+STATICFILES_DIRS = [
+    BASE_DIR / 'media',
+]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATIC_URL = '/static/'
 
-MEDIA_URL = '/media/'
+MEDIA_URL = '/static/media/'  # Django guarda rutas como "articulos/pizza.jpg"
 MEDIA_ROOT = BASE_DIR / 'media'
-WHITENOISE_MEDIA_PREFIX = 'media'
-WHITENOISE_ROOT = BASE_DIR / 'media'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
