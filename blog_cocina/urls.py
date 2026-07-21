@@ -1,25 +1,14 @@
 """
 URL configuration for blog_cocina project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/4.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.shortcuts import redirect
 from django.views.generic import RedirectView
+from django.views.static import serve as media_serve
 
 from . import views
 
@@ -38,8 +27,6 @@ urlpatterns = [
     path('administrador/', consola_admin, name='administrador'),
 
     # ─── Redirects temporarios de URLs viejas a nuevas ───
-    # TODO: eliminar despues de 3 meses (2026-10-12)
-    # Articulos
     path('articulos/addArticulo/', RedirectView.as_view(
         pattern_name='articulos:crear_articulo', permanent=True)),
     path('articulos/detalleArticulos/<int:pk>/', RedirectView.as_view(
@@ -48,14 +35,12 @@ urlpatterns = [
         pattern_name='articulos:editar_articulo', permanent=True)),
     path('articulos/articulo/delete/<int:pk>/', RedirectView.as_view(
         pattern_name='articulos:eliminar_articulo', permanent=True)),
-    # Categorias
     path('articulos/addCategoria/', RedirectView.as_view(
         pattern_name='articulos:crear_categoria', permanent=True)),
     path('articulos/categorias/edit/<int:categoria_id>/', RedirectView.as_view(
         pattern_name='articulos:editar_categoria', permanent=True)),
     path('articulos/categorias/delete/<int:categoria_id>/', RedirectView.as_view(
         pattern_name='articulos:eliminar_categoria', permanent=True)),
-    # Comentarios
     path('articulos/comentario/add/<int:articulo_id>/', RedirectView.as_view(
         pattern_name='articulos:agregar_comentario', permanent=True)),
     path('articulos/comentario/edit/<int:comentario_id>/', RedirectView.as_view(
@@ -64,7 +49,15 @@ urlpatterns = [
         pattern_name='articulos:eliminar_comentario', permanent=True)),
 ]
 
-# Servir archivos estaticos/media SOLO en desarrollo
+# ─── Servir media tanto en dev como en produccion ───
+# WhiteNoise sirve archivos static, pero no media.
+# Django.views.static.serve funciona con DEBUG=True y False.
+urlpatterns += [
+    path('media/<path:path>', media_serve, {
+        'document_root': settings.MEDIA_ROOT,
+    }),
+]
+
+# En desarrollo, servir tambien static via Django
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
