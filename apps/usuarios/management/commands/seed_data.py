@@ -231,9 +231,18 @@ class Command(BaseCommand):
                     usuario_articulo=autor,
                 )
 
+                from django.conf import settings
+                import shutil
+
                 img = _imagen_articulo(i)
                 if img:
-                    articulo.imagen.save(img.name, img, save=False)
+                    # Copiar directamente sin que Django renombre
+                    dest_dir = settings.MEDIA_ROOT / 'articulos'
+                    dest_dir.mkdir(parents=True, exist_ok=True)
+                    dest_path = dest_dir / img.name
+                    with open(dest_path, 'wb') as f:
+                        f.write(img.read())
+                    articulo.imagen.name = f'articulos/{img.name}'
                 else:
                     from django.core.files.uploadedfile import SimpleUploadedFile
                     articulo.imagen.save(

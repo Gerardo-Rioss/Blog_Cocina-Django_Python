@@ -64,7 +64,11 @@ urlpatterns = [
         pattern_name='articulos:eliminar_comentario', permanent=True)),
 ]
 
-# Servir archivos estaticos/media SOLO en desarrollo
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+# ─── Servir archivos media (tanto en dev como en prod) ───
+# En produccion Render usamos WhiteNoise + static(media)
+from django.views.static import serve as static_serve
+urlpatterns += [
+    path('media/<path:path>', static_serve, {
+        'document_root': settings.MEDIA_ROOT,
+    }),
+]

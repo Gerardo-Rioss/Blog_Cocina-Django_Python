@@ -27,7 +27,6 @@ if db_url:
         )
     }
 else:
-    # Fallback a variables individuales
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -39,14 +38,19 @@ else:
         }
     }
 
-# ─── Static files con WhiteNoise ───
+# ─── Static + Media files con WhiteNoise ───
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATIC_URL = '/static/'
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+WHITENOISE_MEDIA_PREFIX = 'media'
+WHITENOISE_ROOT = BASE_DIR / 'media'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Justo despues de Security
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -54,11 +58,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
-# ─── Media files (Render no persiste, usar CDN en produccion real) ───
-# Para el deploy gratis, usamos WhiteNoise tambien para media
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
 
 # ─── Seguridad HTTPS (Render termina SSL) ───
 SECURE_SSL_REDIRECT = True
