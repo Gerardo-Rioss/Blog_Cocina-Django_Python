@@ -3,6 +3,7 @@
   <img src="https://img.shields.io/badge/Django-4.2-092E20?style=for-the-badge&logo=django&logoColor=white" alt="Django 4.2"/>
   <img src="https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.11"/>
   <img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL"/>
+  <img src="https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white" alt="Render"/>
   <img src="https://img.shields.io/badge/Pytest-7.4-0A9EDC?style=for-the-badge&logo=pytest&logoColor=white" alt="Pytest 7.4"/>
   <img src="https://img.shields.io/badge/Bootstrap-5.2-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white" alt="Bootstrap 5.2"/>
   <br/><br/>
@@ -13,12 +14,19 @@
 **Plataforma colaborativa de recetas con sistema de roles jerárquicos y experiencia de usuario tipo revista gastronómica.**
 
 > Proyecto final del curso **Desarrollo Web — Informatorio 2024**.  
-> Evolucionado con diseño profesional, dark mode, animaciones, pruebas automatizadas y despliegue listo para producción.
+> Evolucionado con diseño profesional, dark mode, animaciones, pruebas automatizadas y despliegue en producción con Render.
+
+<p align="center">
+  <a href="https://blog-cocina.onrender.com">
+    <img src="https://img.shields.io/badge/🌐_Demo_en_Vivo-blog--cocina.onrender.com-092E20?style=for-the-badge" alt="Demo en Vivo"/>
+  </a>
+</p>
 
 ---
 
 ## 📋 Tabla de Contenidos
 
+- [Demo en Vivo](#-demo-en-vivo)
 - [Stack Tecnológico](#-stack-tecnológico)
 - [Features](#-features)
 - [Arquitectura del Proyecto](#-arquitectura-del-proyecto)
@@ -27,11 +35,28 @@
 - [Quick Start](#-quick-start)
 - [Entorno de Desarrollo](#-entorno-de-desarrollo)
 - [Pruebas](#-pruebas)
-- [Producción](#-producción)
+- [Deploy en Render](#-deploy-en-render)
+- [Pipeline de Build](#-pipeline-de-build)
 - [Mejoras Aplicadas](#-mejoras-aplicadas)
 - [Roadmap](#-roadmap)
 - [Contribución](#-contribución)
 - [Licencia](#-licencia)
+
+---
+
+## 🌐 Demo en Vivo
+
+La aplicación está desplegada en **Render (plan free)** con PostgreSQL:
+
+👉 **[blog-cocina.onrender.com](https://blog-cocina.onrender.com)**
+
+| Usuario | Contraseña | Rol |
+|:--------|:-----------|:----|
+| `admin` | `admin123` | 👑 Administrador |
+| `colaborador` | `colab123` | ✍️ Colaborador |
+| `miembro1` | `miembro123` | 👤 Miembro |
+
+> ⚠️ El plan free de Render "duerme" tras 15 min sin actividad. La primera carga puede demorar ~30 segundos.
 
 ---
 
@@ -40,15 +65,18 @@
 | Capa | Tecnología | Versión |
 |:-----|:-----------|:-------:|
 | **Backend** | Django | 4.2.3 |
-| **Lenguaje** | Python | 3.11 |
-| **Base de datos** | PostgreSQL / SQLite (dev) | — |
+| **Lenguaje** | Python | 3.11.15 |
+| **Base de datos** | PostgreSQL (prod) / SQLite (dev) | — |
+| **Servidor ASGI/WSGI** | Gunicorn + gthread | 22.0 |
+| **Static/Media** | WhiteNoise | 6.6 |
 | **Frontend** | Bootstrap 5 + CSS Custom Properties | 5.2.1 |
 | **Tipografía** | Playfair Display + Inter | — |
 | **Iconos** | Bootstrap Icons | 1.11 |
 | **Testing** | pytest + factory-boy + coverage | 7.4 / 3.3 / 7.2 |
-| **Imágenes** | Pillow (generación) + Unsplash (fotos reales) | 10.0 |
+| **Imágenes** | Pillow + Unsplash (fotos reales) | 10.0 |
 | **Auth** | django.contrib.auth + Custom User Model | — |
-| **ORM** | Django ORM (MySQL/PostgreSQL compatible) | — |
+| **ORM** | Django ORM (PostgreSQL compatible) | — |
+| **Deploy** | Render (web service + PostgreSQL) | — |
 
 ---
 
@@ -75,11 +103,19 @@
 - **Hero full-width** con artículo destacado
 
 ### 🔐 Seguridad
-- CSRF protection
-- Permission-based authorization
-- Passwords hasheados con set_password()
+- CSRF protection + HTTPS forzado en producción
+- Permission-based authorization (3 roles)
+- Passwords hasheados con `set_password()`
 - Settings separados por entorno (base/local/production)
-- Protección contra XSS, SQL injection (ORM)
+- HSTS, XSS filter, Content-Type nosniff, X-Frame-Options DENY
+- Proxy SSL header para Render
+
+### 🚀 Producción
+- **Deploy automatizado** vía Render + GitHub
+- **Build pipeline** con seed data + imágenes Unsplash reales
+- **PostgreSQL** gestionado por Render (free tier)
+- **WhiteNoise** para servir static + media sin CDN externo
+- **Logging** a stdout para seguimiento en Render Dashboard
 
 ---
 
@@ -91,7 +127,7 @@ Blog_Cocina-Django_Python/
 │   ├── settings/
 │   │   ├── base.py               # Settings compartidos
 │   │   ├── local.py              # Desarrollo (SQLite + debug)
-│   │   └── production.py         # Producción (MySQL + HTTPS)
+│   │   └── production.py         # Producción (PostgreSQL + HTTPS + WhiteNoise)
 │   ├── urls.py                   # Routing principal
 │   ├── views.py                  # Vistas principales (home, acerca_de)
 │   └── context_processors.py     # Contexto global (categorías en footer)
@@ -110,12 +146,14 @@ Blog_Cocina-Django_Python/
 │   ├── articulos/                # Core: artículos + comentarios
 │   │   ├── models.py             # Articulo, Categoria, Comentario
 │   │   ├── forms.py              # ArticuloForm, CategoriaForm, ComentarioForm
-│   │   ├── views/                # Vistas modulares (articulos, categorias, comentarios)
+│   │   ├── views/                # Vistas modulares
 │   │   │   ├── articulos.py
 │   │   │   ├── categorias.py
 │   │   │   └── comentarios.py
 │   │   ├── urls.py
 │   │   ├── admin.py
+│   │   ├── management/commands/
+│   │   │   └── fix_images.py     # Forzar imágenes Unsplash reales en build
 │   │   └── tests/                # Tests unitarios + integración
 │   │       ├── factories.py
 │   │       ├── conftest.py
@@ -139,15 +177,17 @@ Blog_Cocina-Django_Python/
 │   │   ├── detalleArticulos.html
 │   │   ├── addArticulo.html
 │   │   └── edit_articulo.html
-│   ├── categorias/               # CRUD categorías
+│   ├── categorias/
 │   ├── contacto/
-│   └── usuarios/                 # Login + registro
+│   └── usuarios/
 │
 ├── static/
-│   ├── css/styles.css            # ~22KB de CSS custom (vs 250KB original)
-│   └── js/scripts.js             # Dark mode, scroll reveal, validación
+│   ├── css/styles.css            # ~22KB de CSS custom optimizado
+│   └── js/scripts.js             # Dark mode, scroll reveal, validación frontend
 │
-├── media/articulos/              # Imágenes reales de comida (Unsplash)
+├── media/articulos/              # Imágenes reales de comida (Unsplash, 22–160KB c/u)
+├── render.yaml                   # Configuración de deploy en Render
+├── build.sh                      # Script de build para Render
 ├── .env                          # Variables de entorno (local)
 ├── pytest.ini                    # Configuración de pytest
 ├── requirements.txt
@@ -278,7 +318,7 @@ python manage.py runserver --settings=blog_cocina.settings.local
 
 ### SQLite para desarrollo local
 
-El archivo `blog_cocina/settings/local.py` ya está configurado para usar SQLite automáticamente. No requiere instalar MySQL.
+El archivo `blog_cocina/settings/local.py` ya está configurado para usar SQLite automáticamente. No requiere instalar PostgreSQL.
 
 ```python
 # local.py
@@ -337,30 +377,76 @@ pytest --ds=blog_cocina.settings.local --cov=apps --cov-report=term-missing
 
 ---
 
-## 📦 Producción
+## 🚢 Deploy en Render
 
-### Configurar producción
+El proyecto está configurado para deploy en **Render** con PostgreSQL y build automatizado.
 
-```bash
-export DJANGO_SETTINGS_MODULE=blog_cocina.settings.production
-export SECRET_KEY="tu-secret-key-segura"
-export DB_NAME=blog_cocina
-export DB_USER=deploy
-export DB_PASSWORD="contraseña-segura"
-export DB_HOST=localhost
-export ALLOWED_HOSTS=.tudominio.com
+### Archivo `render.yaml`
+
+```yaml
+services:
+  - type: web
+    name: blog-cocina
+    runtime: python
+    region: ohio
+    plan: free
+    branch: proyecto_final
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn blog_cocina.wsgi:application --workers=2 --threads=4 --worker-class=gthread --timeout=120"
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: blog_cocina.settings.production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com,localhost"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: blog-cocina-db
+          property: connectionString
+
+databases:
+  - name: blog-cocina-db
+    region: ohio
+    plan: free
+    databaseName: blog_cocina
+    user: blog_cocina_user
 ```
 
-### Recomendaciones de deploy
+### Configuración de producción destacada
 
-- **Hosting:** Render (Railway, PythonAnywhere)
-- **Base de datos:** PostgreSQL (Render) o MySQL (Railway)
-- **Static/Media:** WhiteNoise o CDN (Cloudinary/S3)
-- **HTTPS:** Forzado vía settings.production + proxy
+| Aspecto | Implementación |
+|:--------|:---------------|
+| **Settings** | `production.py` hereda de `base.py` |
+| **DB** | `dj-database-url` lee `DATABASE_URL` de Render |
+| **Static** | WhiteNoise con cacheo de archivos |
+| **Media** | Copiadas a `staticfiles/` durante el build, servidas por WhiteNoise |
+| **HTTPS** | Forzado vía `SECURE_SSL_REDIRECT` + proxy header |
+| **HSTS** | 1 año con subdominios y preload |
+| **Logging** | StreamHandler a stdout para Render Dashboard |
+
+---
+
+## 🔨 Pipeline de Build
+
+El archivo `build.sh` ejecuta en cada deploy:
+
+```
+1. pip install -r requirements.txt
+2. python manage.py collectstatic --noinput --clear
+3. Copia imágenes de media/ a staticfiles/
+4. python manage.py migrate --noinput
+5. python manage.py seed_data        → Puebla BD con datos de prueba
+6. python manage.py fix_images       → Asigna imágenes Unsplash reales
+```
+
+> ⚡ El comando `fix_images` reemplaza imágenes placeholder por fotos reales de comida (Unsplash, 22–160KB c/u), asegurando un aspecto profesional desde el primer deploy.
 
 ---
 
 ## 🎯 Mejoras Aplicadas
+
+### Optimización y diseño
 
 | Área | Antes | Después |
 |:-----|:------|:--------|
@@ -372,35 +458,56 @@ export ALLOWED_HOSTS=.tudominio.com
 | **Hero** | Estático | **Dinámico** con artículo destacado + overlay |
 | **Comentarios** | `<button><a>` anidados | Sistema moderno tipo card con acciones |
 | **Dark mode** | ❌ No existía | ✅ Toggle con persistencia y preferencia del sistema |
-| **Imágenes** | Placeholder 1×1 | **20 fotos reales de Unsplash** (22-160KB) |
+| **Imágenes** | Placeholder 1×1 | **20 fotos reales de Unsplash** (22–160KB) |
 | **Formularios** | `form.as_table` | Cards estilizadas con feedback visual |
 | **Login/Registro** | Básico | Cards centradas con iconografía |
+
+### Testing y arquitectura
+
+| Área | Antes | Después |
+|:-----|:------|:--------|
 | **Tests** | 8 errores pre-existentes | **146 tests, 0 fallos** |
 | **Factory Usuario** | No funcionaba | `_create` override con grupos exclusivos |
 | **Settings** | Single file | Base + Local + Production separados |
 | **Migrations** | Desincronizadas (contacto) | **Sync completas** |
 
+### Pipeline de producción
+
+| Área | Antes | Después |
+|:-----|:------|:--------|
+| **Deploy** | Manual / sin configurar | **Render + GitHub** automatizado |
+| **Build** | Inexistente | **build.sh** con migraciones + seed + imágenes |
+| **Base de datos** | SQLite solamente | PostgreSQL en producción |
+| **Media en prod** | No servidas | Copiadas a `staticfiles/` + WhiteNoise |
+| **Imágenes reales** | Placeholder genérico | `fix_images` con 20 fotos Unsplash reales |
+| **HTTPS** | ❌ | ✅ Forzado con HSTS 1 año |
+| **Seguridad** | ❌ | HSTS, XSS filter, Content-Type nosniff, X-Frame-Options |
+
 ---
 
 ## 🗺 Roadmap
 
-### High Priority
+### ✅ Completado
 - [x] Dark mode completo
 - [x] Diseño revista profesional
-- [x] Imágenes reales de comida
-- [x] Sistema de roles funcional
+- [x] Imágenes reales de comida (Unsplash)
+- [x] Sistema de roles funcional (3 niveles)
 - [x] Tests automatizados (146 ✅)
+- [x] Deploy en Render con PostgreSQL
+- [x] Build pipeline con seed data + fix_images
+- [x] Configuración de producción hardening (HTTPS, HSTS, SecurityMiddleware)
+- [x] Servicio de media vía WhiteNoise (sin CDN externo)
 
-### Medium Priority
+### 🔜 Medium Priority
 - [ ] Buscador full-text de artículos
 - [ ] Paginación en listado
 - [ ] Tags/etiquetas en artículos
 - [ ] Perfil de usuario público
 - [ ] Editor WYSIWYG (rich text)
 - [ ] WebP/AVIF para imágenes optimizadas
-- [ ] Docker + docker-compose
+- [ ] Docker + docker-compose (para desarrollo local)
 
-### Future
+### 🔮 Future
 - [ ] API REST (DRF)
 - [ ] Social login (Google, GitHub)
 - [ ] Recetas favoritas / bookmarks
@@ -437,5 +544,9 @@ Este proyecto fue desarrollado como trabajo final del **Informatorio 2024** — 
     <a href="https://github.com/Gerardo-Rioss">GitHub</a> · 
     <a href="https://gerariosdev.netlify.app">Portfolio</a> · 
     <a href="https://linkedin.com/in/gerardrioss/">LinkedIn</a>
+  </sub>
+  <br/><br/>
+  <sub>
+    <a href="https://blog-cocina.onrender.com">🌐 Ver Demo en Vivo</a>
   </sub>
 </div>
